@@ -1,0 +1,5 @@
+expo init signal
+yarn add @react-navigation/stack
+yarn add @react-navigation/native
+yarn add react-native-gesture-handler
+expo install firebase
