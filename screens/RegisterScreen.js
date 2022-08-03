@@ -2,23 +2,36 @@ import { View } from 'react-native';
 import React, { useLayoutEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Button, Input, Text } from 'react-native-elements';
-import { auth,createUserWithEmailAndPassword } from '../firebase';
+import { auth, createUserWithEmailAndPassword, updateProfile,addDoc,collection,db } from '../firebase';
 const RegisterScreen = ({ navigation }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [imageURL, setImageURL] = useState('');
     const register = () => {
-        createUserWithEmailAndPassword(auth,email,password)
-        .then(authUser=> {
-    console.log('hi',authUser)
-    authUser.user.update({
-        displayName:name,
-        photoURL:imageURL || 'https://toppng.com/uploads/preview/roger-berry-avatar-placeholder-11562991561rbrfzlng6h.png'
-    })
-})
-.catch(Error=> alert(Error.message))
+        createUserWithEmailAndPassword(auth, email, password)
+            .then(() =>
+               { updateProfile(auth.currentUser, {
+                    displayName: name,
+                    photoURL: imageURL || 'https://toppng.com/uploads/preview/roger-berry-avatar-placeholder-11562991561rbrfzlng6h.png'
+                })
+                createUser(auth.currentUser.uid);}
+                )
+            .catch(Error => alert(Error.message))
     };
+    const createUser = async (ID) => {
+        try {
+            await addDoc(collection(db, 'users'), {
+                FullName: name,
+                email,
+                imageURL:imageURL|| 'https://toppng.com/uploads/preview/roger-berry-avatar-placeholder-11562991561rbrfzlng6h.png',
+                ID
+            });
+        }
+        catch (e) {
+            alert(e)
+        }
+    }
     useLayoutEffect(() => {
         navigation.setOptions({
             headerBackTitle: "Back to Login"
@@ -37,14 +50,14 @@ const RegisterScreen = ({ navigation }) => {
                     // autoFocus
                     type="text"
                     value={name}
-                    onChangeText={text => setName(text)}
+                    onChangeText={text => setName(text.trim())}
                 />
                 <Input
                     style={styles.input}
                     placeholder="Email"
                     type="email"
                     value={email}
-                    onChangeText={text => setEmail(text)}
+                    onChangeText={text => setEmail(text.trim())}
                 />
                 <Input
                     style={styles.input}
@@ -59,7 +72,7 @@ const RegisterScreen = ({ navigation }) => {
                     placeholder="Profile Picture URL (optional)"
                     type="text"
                     value={imageURL}
-                    onChangeText={text => setImageURL(text)}
+                    onChangeText={text => setImageURL(text.trim())}
                     onSubmitEditing={register}
                 />
             </View>

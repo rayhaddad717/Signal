@@ -7,23 +7,27 @@ import { auth,signInWithEmailAndPassword } from '../firebase';
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading,setIsLoading]=useState(true);
     useEffect(()=>{
-        const unsubscribe = auth.onAuthStateChanged((authUser)=>{
-            if(authUser){
-                navigation.replace('Home');
-            }
-        })
-        return unsubscribe;
+
+            const unsubscribe = auth.onAuthStateChanged((authUser)=>{
+                setIsLoading(false);
+                if(authUser){
+                    navigation.replace('Home');
+                }
+            })
+            return unsubscribe;
     },[])
     const signIn = () => {
         signInWithEmailAndPassword(auth,email,password)
         .then((authUser)=>{
+            console.log(authUser)
             navigation.replace('Home');
         })
         .catch(e=>alert(e.message))
     };
     return (
-        <KeyboardAvoidingView style={styles.container}>
+       isLoading ?<View style={styles.spinner}></View>: <KeyboardAvoidingView style={styles.container}>
             <StatusBar style="light" />
             <Image source={{
                 uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Signal-Logo.svg/600px-Signal-Logo.svg.png?20201126050550'
@@ -36,8 +40,8 @@ const LoginScreen = ({ navigation }) => {
                 }}
             />
             <View style={styles.inputContainer}>
-                <Input placeholder="Email" autofocus type="email" value={email} onChangeText={text => setEmail(text)} />
-                <Input placeholder="Password" secureTextEntry type="password" value={password} onChangeText={text => setPassword(text)} />
+                <Input placeholder="Email" autofocus type="email" value={email} onChangeText={text => setEmail(text.trim())} />
+                <Input placeholder="Password" onSubmitEditing={signIn} secureTextEntry type="password" value={password} onChangeText={text => setPassword(text)} />
             </View>
             <Button containerStyle={styles.button} title="Login" onPress={signIn} />
             <Button containerStyle={styles.button} type="outline" title="Register" onPress={() => navigation.navigate('Register')} />
@@ -59,6 +63,12 @@ const styles = StyleSheet.create({
     button: {
         width: 200,
         marginTop: 10
+    },
+    spinner:{
+        borderWidth:3,
+        borderRadius:50,
+        height:100,
+        width:100,
     }
 });
 
