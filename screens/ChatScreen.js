@@ -95,9 +95,9 @@ export default function ChatScreen({ navigation, route }) {
             <ScrollView>
               {messages.map(({ id, data }) => (
                 data.email === auth.currentUser.email ?
-                  <View><Text style={styles.senderText}>{data.message}</Text></View>
+                  <View key={id} style={styles.sender}><Text style={styles.senderText}>{data.message}</Text></View>
                   :
-                  <View><Text style={styles.receiverText}>{data.message}</Text></View>
+                  <View key={id} style={styles.receiver}><Text style={styles.receiverText}>{data.message}</Text></View>
               ))}
             </ScrollView>
             <View style={styles.footer}>
@@ -132,5 +132,25 @@ const styles = StyleSheet.create({
     padding: 10,
     color: "gray",
     borderRadius: 30
+  },
+  sender:{
+    padding:15,
+    backgroundColor:'#ececec',
+    alignSelf:'flex-end',
+    borderRadius:20,
+    marginRight:15,
+    marginBottom:20,
+    maxWidth:'80%',
+    position:'relative'
+  },
+  reciever:{
+    padding:15,
+    backgroundColor:'#2868e6',
+    alignSelf:'flex-start',
+    borderRadius:20,
+    marginRight:15,
+    marginBottom:20,
+    maxWidth:'80%',
+    position:'relative'
   }
 })
