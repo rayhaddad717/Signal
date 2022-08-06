@@ -27,7 +27,7 @@ const LoginScreen = ({ navigation }) => {
         .catch(e=>alert(e.message))
     };
     return (
-       isLoading ?<View style={styles.spinner}></View>: <KeyboardAvoidingView style={styles.container}>
+       isLoading ?<View style={styles.spinner}><StatusBar style="light" /></View>: <KeyboardAvoidingView style={styles.container}>
             <StatusBar style="light" />
             <Image source={{
                 uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Signal-Logo.svg/600px-Signal-Logo.svg.png?20201126050550'

@@ -10,14 +10,12 @@ export class User {
         console.log(this.FullName, this.email, this.ID, this.imageURL);
     }
     static getByID = async (id) => {
-        console.log(id)
         const q = query(collection(db, "users"), where("ID", "==", id));
         const querySnapshot = await getDocs(q);
         let u=null;
         querySnapshot.forEach((doc) => {
             u= new User({ ...doc.data() });
         });
-        u.print()
         return u;
     }
 }

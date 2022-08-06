@@ -67,7 +67,7 @@ const AddChatScreen = ({ navigation }) => {
                 <UserListItem key={u.ID} {...u} isSelected={selectedUserID==u.ID} setSelectedUserID={setSelectedUserID}/>
             ))}
             </ScrollView>
-            <Button title="Create new chat" onPress={createChat} />
+            <Button disabled={!input||!selectedUserID} title="Create new chat" onPress={createChat} />
         </View>
     )
 }

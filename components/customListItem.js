@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { ListItem, Avatar } from 'react-native-elements'
-const CustomListItem = ({ID,chatName,enterChat,imageURL}) => {
+import { auth } from '../firebase'
+const CustomListItem = ({ ID, chatName, enterChat, imageURL, recentMessage }) => {
     return (
-        <ListItem onPress={()=>enterChat(ID,chatName,imageURL)} style={styles.container} key={ID} bottomDivider >
+        <ListItem onPress={() => enterChat(ID, chatName, imageURL)} style={styles.container} key={ID} bottomDivider >
             <Avatar
                 rounded
                 source={{
@@ -15,10 +16,10 @@ const CustomListItem = ({ID,chatName,enterChat,imageURL}) => {
                     {chatName}
                 </ListItem.Title>
                 <ListItem.Subtitle
-                numberOfLines={1}
-                ellipsizeMode={"tail"}
+                    numberOfLines={1}
+                    ellipsizeMode={"tail"}
                 >
-                    {ID}
+                  {recentMessage[recentMessage?.length - 1]?.data?.email === auth.currentUser.email ? 'You': recentMessage[recentMessage?.length - 1]?.data?.displayName}:  {recentMessage[recentMessage?.length - 1]?.data?.message}
                 </ListItem.Subtitle>
             </ListItem.Content>
         </ListItem>
@@ -28,7 +29,7 @@ const CustomListItem = ({ID,chatName,enterChat,imageURL}) => {
 export default CustomListItem
 
 const styles = StyleSheet.create({
-    container:{
-        justifyContent:'center'
+    container: {
+        justifyContent: 'center'
     }
 })

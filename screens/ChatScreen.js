@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, ScrollView, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native'
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useLayoutEffect, useState, useRef, useEffect } from 'react'
 import { Avatar } from 'react-native-elements'
 import { db, serverTimestamp, query, addDoc, auth, collection, doc, collectionGroup, orderBy, where, onSnapshot } from '../firebase'
 import { StatusBar } from 'expo-status-bar'
@@ -7,9 +7,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPhone } from '@fortawesome/free-solid-svg-icons/faPhone';
 import { faVideoCamera } from '@fortawesome/free-solid-svg-icons/faVideoCamera';
 import { Ionicons } from '@expo/vector-icons'
+import {store} from '../store'
 export default function ChatScreen({ navigation, route }) {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([])
+  const messageScrollView = useRef(null)
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: route.params.chatName,
@@ -51,26 +53,20 @@ export default function ChatScreen({ navigation, route }) {
     })
   }, [])
 
-  useLayoutEffect(() => {
-    const messageQuery = query(collectionGroup(db, 'messages', where("chatID", "==", route.params.ID)), orderBy('timestamp'));
-    const unsubscribe = onSnapshot(messageQuery, (querySnapshot) => {
-      const m = []
-      querySnapshot.forEach((doc) => (
-        m.push({
-          id: doc.id,
-          data: doc.data()
-        })))
-      setMessages(m);
-    })
-    return unsubscribe;
-  }, [route]);
+useEffect(()=>{
+  setMessages(store.getState().messages[route.params.ID]||[])
+  return store.subscribe(() => setMessages(store.getState().messages[route.params.ID]))
+},[])
+  useEffect(() => {
+    messageScrollView.current.scrollToEnd();
+  }, [messages])
   const sendMessage = async () => {
-    Keyboard.dismiss();
+    //Keyboard.dismiss();
     setInput('')
     const messageRef = doc(db, "chats", route.params.ID);
     try {
       await addDoc(collection(messageRef, 'messages'), {
-        timestamp: serverTimestamp(),
+        timestamp: new Date().getTime(),
         message: input,
         displayName: auth.currentUser.displayName,
         email: auth.currentUser.email,
@@ -85,14 +81,14 @@ export default function ChatScreen({ navigation, route }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar style='light' />
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        // behavior={(Platform.OS!==undefined && Platform.OS === "ios") ? "padding" : "height"}
         style={styles.container}
         keyboardVerticalOffset={90}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
           <>
-            <ScrollView>
+            <ScrollView ref={messageScrollView} contentContainerStyle={{ paddingBottom: 10 }}>
               {messages.map(({ id, data }) => (
                 data.email === auth.currentUser.email ?
                   <View key={id} style={styles.sender}><Text style={styles.senderText}>{data.message}</Text></View>
@@ -133,24 +129,25 @@ const styles = StyleSheet.create({
     color: "gray",
     borderRadius: 30
   },
-  sender:{
-    padding:15,
-    backgroundColor:'#ececec',
-    alignSelf:'flex-end',
-    borderRadius:20,
-    marginRight:15,
-    marginBottom:20,
-    maxWidth:'80%',
-    position:'relative'
+  sender: {
+    padding: 15,
+    backgroundColor: '#ececec',
+    alignSelf: 'flex-end',
+    borderRadius: 20,
+    marginRight: 15,
+    marginTop: 10,
+    maxWidth: '80%',
+    position: 'relative'
   },
-  reciever:{
-    padding:15,
-    backgroundColor:'#2868e6',
-    alignSelf:'flex-start',
-    borderRadius:20,
-    marginRight:15,
-    marginBottom:20,
-    maxWidth:'80%',
-    position:'relative'
+  receiver: {
+    padding: 15,
+    backgroundColor: '#2868e6',
+    alignSelf: 'flex-start',
+    borderRadius: 20,
+    marginLeft: 15,
+    marginTop: 10,
+    maxWidth: '80%',
+    position: 'relative',
+    color: 'white'
   }
 })
