@@ -1,11 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import {Provider} from 'react-redux';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import HomeScreen from './screens/HomeScreen';
 import AddChatScreen from './screens/AddChatScreen';
 import ChatScreen from './screens/ChatScreen';
+import {store} from './store';
+import CallComponent from './components/CallComponent';
 const Stack = createStackNavigator();
 
 const globalScreenOptions = {
@@ -17,6 +20,7 @@ const globalScreenOptions = {
 };
 export default function App() {
    return (
+    <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator screenOptions={globalScreenOptions}>
         <Stack.Screen name="Login" component={LoginScreen} />
@@ -26,6 +30,8 @@ export default function App() {
         <Stack.Screen name="Chat" component={ChatScreen} />
       </Stack.Navigator>
     </NavigationContainer>
+      {/* <CallComponent/> */}
+    </Provider>
   );
 }
 

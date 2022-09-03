@@ -1,5 +1,5 @@
 import { initializeApp, getApp, getApps  } from 'firebase/app';
-import { getFirestore, collection, addDoc,getDocs, query, where,onSnapshot,doc,serverTimestamp ,collectionGroup,setDoc,updateDoc,arrayUnion,orderBy } from 'firebase/firestore';
+import { deleteDoc ,getFirestore, collection, addDoc,getDocs, query, where,onSnapshot,doc,serverTimestamp ,collectionGroup,setDoc,updateDoc,arrayUnion,orderBy } from 'firebase/firestore';
 import { getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile  } from 'firebase/auth';
 import 'firebase/storage';
 const firebaseConfig = {
@@ -19,4 +19,4 @@ if (getApps().length == 0) {
 const db = getFirestore(app);
 
 const auth = getAuth(app);
-export { db, auth,createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile, collection, addDoc,getDocs,arrayUnion,updateDoc, query, where,onSnapshot,doc,serverTimestamp ,setDoc,collectionGroup,orderBy  };
+export { db,deleteDoc , auth,createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile, collection, addDoc,getDocs,arrayUnion,updateDoc, query, where,onSnapshot,doc,serverTimestamp ,setDoc,collectionGroup,orderBy  };

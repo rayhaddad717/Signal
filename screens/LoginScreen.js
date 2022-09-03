@@ -2,7 +2,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import { Button, Input, Image } from 'react-native-elements';
 import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar';
-import { KeyboardAvoidingView } from 'react-native';
+import { ActivityIndicator,KeyboardAvoidingView } from 'react-native';
 import { auth,signInWithEmailAndPassword } from '../firebase';
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -19,15 +19,17 @@ const LoginScreen = ({ navigation }) => {
             return unsubscribe;
     },[])
     const signIn = () => {
+        setIsLoading(true);
         signInWithEmailAndPassword(auth,email,password)
         .then((authUser)=>{
             console.log(authUser)
+            setIsLoading(false);
             navigation.replace('Home');
         })
-        .catch(e=>alert(e.message))
+        .catch(e=>{alert(e.message);setIsLoading(false);})
     };
     return (
-       isLoading ?<View style={styles.spinner}><StatusBar style="light" /></View>: <KeyboardAvoidingView style={styles.container}>
+       isLoading ?<View style={styles.spinner}><StatusBar style="light" /><ActivityIndicator size="large" color="#2C6BED" /></View>: <KeyboardAvoidingView style={styles.container}>
             <StatusBar style="light" />
             <Image source={{
                 uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Signal-Logo.svg/600px-Signal-Logo.svg.png?20201126050550'
@@ -65,10 +67,11 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     spinner:{
-        borderWidth:3,
-        borderRadius:50,
-        height:100,
-        width:100,
+        width:'100%',
+        height:'100%',
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center'
     }
 });
 

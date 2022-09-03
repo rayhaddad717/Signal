@@ -7,11 +7,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPhone } from '@fortawesome/free-solid-svg-icons/faPhone';
 import { faVideoCamera } from '@fortawesome/free-solid-svg-icons/faVideoCamera';
 import { Ionicons } from '@expo/vector-icons'
-import {store} from '../store'
+import {setRemoteMediaStream, store,updateCallStatus} from '../store'
+import {call as callAPI} from '../api/calling.js';
+import { useSelector, useDispatch } from 'react-redux';
 export default function ChatScreen({ navigation, route }) {
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState([])
-  const messageScrollView = useRef(null)
+  const [messages, setMessages] = useState([]);
+  const [otherUserID,setOtherUserID]=useState(route.params.otherUserID);
+  const callStatus=useSelector(state=>state.callStatus);
+  const dispatch = useDispatch();
+
+  const messageScrollView = useRef(null);
+    const call =  isVideo =>{
+    console.log('entered',otherUserID);
+    callAPI({otherUserID,callerUserID:auth.currentUser.uid,callerName:auth.currentUser.displayName,isVideo});
+    dispatch(updateCallStatus({...callStatus,isCalling:true, callerName:route.params.chatName,
+    callerID:route.params.otherUserID}))
+  }
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: route.params.chatName,
@@ -41,10 +53,10 @@ export default function ChatScreen({ navigation, route }) {
             width: 70,
             marginRight: 20
           }}>
-          <TouchableOpacity>
+          <TouchableOpacity  onPress={()=>{call(false);}}>
             <FontAwesomeIcon icon={faPhone} size={20} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>call(true)}>
             <FontAwesomeIcon icon={faVideoCamera} size={20} color="white" />
           </TouchableOpacity>
         </View>
@@ -54,14 +66,14 @@ export default function ChatScreen({ navigation, route }) {
   }, [])
 
 useEffect(()=>{
-  setMessages(store.getState().messages[route.params.ID]||[])
-  return store.subscribe(() => setMessages(store.getState().messages[route.params.ID]))
+  setMessages(store.getState().messages.messages[route.params.ID]||[]);
+  return store.subscribe(() => setMessages(store.getState().messages.messages[route.params.ID]))
 },[])
   useEffect(() => {
     messageScrollView.current.scrollToEnd();
   }, [messages])
   const sendMessage = async () => {
-    //Keyboard.dismiss();
+    if(input.trim()=='') {setInput('');return;}
     setInput('')
     const messageRef = doc(db, "chats", route.params.ID);
     try {
@@ -77,6 +89,7 @@ useEffect(()=>{
 
     catch (e) { console.log("Error sending message", e) }
   }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar style='light' />
