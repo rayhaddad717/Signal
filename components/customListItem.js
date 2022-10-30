@@ -22,11 +22,17 @@ const CustomListItem = ({ ID, chatName, enterChat, imageURL, recentMessage, othe
                     ellipsizeMode={"tail"}
                     style={styles.subtitle}
                 >
-                    <View style={styles.subtitle}>
-                        <Text>{recentMessage[recentMessage?.length - 1]?.data?.message}</Text>
-                        {recentMessage[recentMessage?.length - 1]?.data?.email === auth.currentUser.email ?
-                            <FontAwesomeIcon color='#2C6BED' style={styles.checkIcon} icon={faCheck} /> : null}
+                    <View >
+                        <View>
+                            <Text>{recentMessage[recentMessage?.length - 1]?.data?.message}</Text>
+                        </View>
+                        <View >
+
+                            {recentMessage[recentMessage?.length - 1]?.data?.email === auth.currentUser.email ?
+                                <FontAwesomeIcon color='#2C6BED' style={styles.checkIcon} icon={faCheck} /> : null}
+                        </View>
                     </View>
+
                 </ListItem.Subtitle>
             </ListItem.Content>
         </ListItem>
@@ -39,7 +45,10 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'center'
     },
-    subtitle: { display:'flex',flex: 1, flexDirection: 'row',width:'100%' ,justifyContent:'space-between'},
-    
-    message: {}
+    subtitle: { position: 'relative', display: 'flex', flex: 1, flexDirection: 'row', width: '100%', justifyContent: 'space-between', },
+
+    message: {},
+    checkIcon: {
+        marginLeft: 250
+    }
 })
