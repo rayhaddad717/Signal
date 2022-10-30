@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/Signal-Logo.svg.png",
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -25,7 +25,9 @@
         "foregroundImage": "./assets/Signal-Logo.svg.png",
         "backgroundColor": "#FFFFFF"
       },
-      "permissions":[ "CAMERA"],
+      "permissions": [
+        "CAMERA"
+      ],
       "package": "com.rayhaddadcompany.signal",
       "versionCode": 1
     },
