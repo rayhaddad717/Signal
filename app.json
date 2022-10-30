@@ -1,5 +1,6 @@
 {
   "expo": {
+    "plugins": ["@config-plugins/react-native-webrtc"],
     "name": "signal",
     "slug": "signal",
     "version": "1.0.0",
@@ -25,7 +26,6 @@
         "foregroundImage": "./assets/Signal-Logo.svg.png",
         "backgroundColor": "#FFFFFF"
       },
-      "permissions":[ "CAMERA"],
       "package": "com.rayhaddadcompany.signal",
       "versionCode": 1
     },

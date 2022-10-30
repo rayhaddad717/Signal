@@ -10,7 +10,7 @@ import { AntDesign, SimpleLineIcons } from '@expo/vector-icons'
 import { Chat } from '../interface/chat';
 import { User } from '../interface/user';
 import { useSelector, useDispatch } from 'react-redux'
-import {store,update} from '../store'
+import {store,update,setUserID} from '../store'
 import { rejectCall } from '../api/calling';
 const HomeScreen = ({ navigation }) => {
   const [myChats, setMyChats] = useState([]);
@@ -151,7 +151,6 @@ const HomeScreen = ({ navigation }) => {
         }})
     })
 
-
     return () => {
       unsubscribeOtherUser();
       unsubscribeOwnerChat();
@@ -161,7 +160,10 @@ const HomeScreen = ({ navigation }) => {
   }, [])
   const setUnique = (chats) => {
     chats.reverse()
-    setAllChats(chats.filter((c, index) => (chats.findIndex(ch => ch.ID == c.ID) === index)
+    setAllChats(chats.filter((c, index) => {
+      dispatch(setUserID(c.otherUserID));
+      dispatch(setUserID(c.ownerID));
+      return (chats.findIndex(ch => ch.ID == c.ID) === index)}
     ))
   }
   useEffect(() => {

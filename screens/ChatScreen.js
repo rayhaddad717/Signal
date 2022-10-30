@@ -19,10 +19,10 @@ export default function ChatScreen({ navigation, route }) {
 
   const messageScrollView = useRef(null);
     const call =  isVideo =>{
-    console.log('entered',otherUserID);
     callAPI({otherUserID,callerUserID:auth.currentUser.uid,callerName:auth.currentUser.displayName,isVideo});
     dispatch(updateCallStatus({...callStatus,isCalling:true, callerName:route.params.chatName,
-    callerID:route.params.otherUserID}))
+    callerID:route.params.otherUserID}));
+    navigation.navigate('Call');
   }
   useLayoutEffect(() => {
     navigation.setOptions({

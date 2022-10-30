@@ -22,7 +22,6 @@ const LoginScreen = ({ navigation }) => {
         setIsLoading(true);
         signInWithEmailAndPassword(auth,email,password)
         .then((authUser)=>{
-            console.log(authUser)
             setIsLoading(false);
             navigation.replace('Home');
         })

@@ -7,8 +7,10 @@ import { db, collection, addDoc, auth, getDocs } from '../firebase';
 import { StatusBar } from 'expo-status-bar';
 import { User } from '../interface/user';
 import UserListItem from '../components/UserListItem';
+import { useSelector } from 'react-redux';
 const AddChatScreen = ({ navigation }) => {
     // const [input, setInput] = useState('');
+    // const allIDS = useSelector(state=>state.messages.userIDS)
     const [users, setUsers] = useState([]);
     const [selectedUserID, setSelectedUserID] = useState('');
     useLayoutEffect(() => {
@@ -65,7 +67,8 @@ const AddChatScreen = ({ navigation }) => {
             /> */}
             <ScrollView style={styles.scrollView}>
                 {users.map(u => {
-                    if (u.ID == auth.currentUser.uid) return null;
+                    // if (u.ID == auth.currentUser.uid) return null;
+                    // if (userIDS.has(u.ID)) return null;
                     return <UserListItem key={u.ID} {...u} isSelected={selectedUserID == u.ID} setSelectedUserID={setSelectedUserID} />
                 })}
             </ScrollView>
